@@ -89,6 +89,35 @@ class App extends React.Component {
   }
 
 
+  handleMovieTitleClick(e) {
+    console.log('abc')
+    var movieTitle = e.target.innerText;
+    if (movieTitle.includes('To Watch')) {
+      var index = movieTitle.indexOf('To Watch')
+      movieTitle = movieTitle.slice(0, index)
+    }
+    if (movieTitle.includes('Watched')) {
+      var index = movieTitle.indexOf('Watched')
+      movieTitle = movieTitle.slice(0, index)
+    }
+    console.log(movieTitle)
+
+    movieTitle = movieTitle.replaceAll(' ', '%20')
+
+
+    var settings = {
+
+      'url':`https://api.themoviedb.org/3/search/movie?api_key=9d5e94e46cbf63ea06b002c66d0bc9c8&language=en-US&query='${movieTitle}'&page=1&include_adult=false`,
+      'method': 'GET'
+    }
+    $.ajax(settings).done(function(response) {
+      var movie = response.results[0]
+
+      console.log(response, settings)
+    });
+
+
+  }
 
   render() {
     return (
@@ -101,7 +130,7 @@ class App extends React.Component {
 
         <ul className = 'list-container'>
           {this.state.displayedMovies.map( (movie) =>
-            <Movie handleWatchedButton = {this.handleWatchedButton.bind(this)} movie = {movie}/>
+            <Movie handleWatchedButton = {this.handleWatchedButton.bind(this)} movie = {movie} handleMovieTitleClick = {this.handleMovieTitleClick.bind(this)}/>
           )}
         </ul>
       </div>
