@@ -14,7 +14,8 @@ class App extends React.Component {
     this.state = {
       displayedMovies: this.displayedMovies,
       searchTextInput: '',
-      addMovieTextInput:''
+      addMovieTextInput:'',
+      dropdown: []
     }
   }
 
@@ -57,7 +58,15 @@ class App extends React.Component {
     console.log('test')
     var movie = {title: this.state.addMovieTextInput, watched: 'To Watch'}
     this.displayedMovies.push(movie)
+
+
+
+
     this.setState({displayedMovies: this.displayedMovies})
+
+
+
+
   }
 
   handleWatched() {
@@ -89,35 +98,58 @@ class App extends React.Component {
   }
 
 
-  handleMovieTitleClick(e) {
+  handleMovieTitleClick(movie, index) {
     console.log('abc')
-    var movieTitle = e.target.innerText;
+    var movieTitle = movie.title;
     if (movieTitle.includes('To Watch')) {
-      var index = movieTitle.indexOf('To Watch')
-      movieTitle = movieTitle.slice(0, index)
+      var indexForSlice = movieTitle.indexOf('To Watch')
+      movieTitle = movieTitle.slice(0, indexForSlice)
     }
     if (movieTitle.includes('Watched')) {
-      var index = movieTitle.indexOf('Watched')
-      movieTitle = movieTitle.slice(0, index)
+      var indexForSlice = movieTitle.indexOf('Watched')
+      movieTitle = movieTitle.slice(0, indexForSlice)
     }
     console.log(movieTitle)
 
     movieTitle = movieTitle.replaceAll(' ', '%20')
 
-
     var settings = {
 
-      'url':`https://api.themoviedb.org/3/search/movie?api_key=9d5e94e46cbf63ea06b002c66d0bc9c8&language=en-US&query='${movieTitle}'&page=1&include_adult=false`,
+      'url':`https://api.themoviedb.org/3/search/movie?api_index=9d5e94e46cbf63ea06b002c66d0bc9c8&language=en-US&query='${movieTitle}'&page=1&include_adult=false`,
       'method': 'GET'
     }
-    $.ajax(settings).done(function(response) {
-      var movie = response.results[0]
 
-      console.log(response, settings)
-    });
+
+
+    $.ajax(settings).done(function(response) {
+      var movieData = response.results[0]
+      console.log(movieData)
+
+      console.log(movie)
+
+      })
+
+    // var updatedMovie = JSON.stringify(movie)
+    // updatedMovie.year = movieData.release_date.substring(0,4)
+
+    // var movieList = this.state.displayedMovies.slice()
+
+    // movieList[index] =
+    // for (var i = 0; i < movieList.length;i++) {
+
+    // }
+
+
+
+      var dropdown = this.state.dropdown;
+      dropdown.push(index)
+      this.setState({dropdown: dropdown})
+
+
 
 
   }
+
 
   render() {
     return (
@@ -129,8 +161,8 @@ class App extends React.Component {
         <Watched movies = {this.state.displayedMovies} handleWatched = {this.handleWatched.bind(this)} handleToWatch =  {this.handleToWatch.bind(this)}/>
 
         <ul className = 'list-container'>
-          {this.state.displayedMovies.map( (movie) =>
-            <Movie handleWatchedButton = {this.handleWatchedButton.bind(this)} movie = {movie} handleMovieTitleClick = {this.handleMovieTitleClick.bind(this)}/>
+          {this.state.displayedMovies.map( (movie, i) =>
+            <Movie index = {i} handleWatchedButton = {this.handleWatchedButton.bind(this)} movie = {movie} dropdown = {this.state.dropdown} handleMovieTitleClick = {this.handleMovieTitleClick.bind(this)}/>
           )}
         </ul>
       </div>
