@@ -5,6 +5,7 @@ import React from 'react';
 
 const Movie = (props) => {
 
+
   console.log(props.index)
   if(props.dropdown.includes(props.index)) {
     return (
